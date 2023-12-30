@@ -1,8 +1,8 @@
 /*
     In this file we gonna configure the ORM sequelize
 */
-import { Sequelize } from "sequelize";
-import databaseConfigs from "../config/databaseConfig";
+const Sequelize = require("sequelize");
+const databaseConfigs = require("../config/databaseConfig.js");
 
 const databaseConnection = new Sequelize(databaseConfigs);
 

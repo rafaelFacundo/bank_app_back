@@ -1,13 +1,11 @@
-const databaseConfigs = {
+module.exports = {
   dialect: "postgres",
   host: process.env.POSTGRES_SERVER_HOST,
   username: "postgres",
   password: "postgres",
-  database: process.env.POSTGRES_SERVER_DATABASE,
+  database: "mubank",
   define: {
     timestamps: true,
     underscored: true,
   },
 };
-
-export default databaseConfigs;

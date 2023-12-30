@@ -1,4 +1,4 @@
-import express from "express";
+const express = require("express");
 
 const routes = express.Router();
 
@@ -7,4 +7,4 @@ routes.get("/", (req, res) => {
   res.send("Doctor who");
 });
 
-export default routes;
+module.exports = routes;
