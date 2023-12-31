@@ -9,4 +9,4 @@ const databaseConnection = new Sequelize(databaseConfigs);
 
 User.init(databaseConnection);
 
-export default databaseConnection;
+module.exports = databaseConnection;
