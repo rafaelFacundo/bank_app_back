@@ -9,39 +9,40 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    return queryInterface.createTable("users", {
+    return queryInterface.createTable("cards", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      name: {
+      owner_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "users", key: "id" },
+      },
+      card_number: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      email: {
-        type: Sequelize.STRING,
+      total_limit: {
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      birth_date: {
-        type: Sequelize.DATEONLY,
+      available_limit: {
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       is_active: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
       },
-      created_at: {
-        type: Sequelize.DATE,
+      experation_date: {
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
-      updated_at: {
-        type: Sequelize.DATE,
+      security_code: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
     });
@@ -54,6 +55,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    return queryInterface.dropTable("users");
+    return queryInterface.dropTable("cards");
   },
 };

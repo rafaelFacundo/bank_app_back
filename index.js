@@ -3,8 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const routes = require("./src/routes/routes.js");
 
-console.log(process.env.POSTGRES_SERVER_PORT);
-
 const app = express();
 app.use(express.json());
 app.use(cors());
