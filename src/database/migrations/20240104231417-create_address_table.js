@@ -9,7 +9,23 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    return;
+    return queryInterface.createTable("address", {
+      id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "users", key: "id" },
+      },
+      street: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+    });
   },
 
   async down(queryInterface, Sequelize) {
