@@ -164,6 +164,38 @@ const createNewUser = async (req, res) => {
   }
 };
 
+const authenticateUserLogin = async (req, res) => {
+  const { userName, email, document, password } = req.body;
+
+  try {
+    const userFoundInDB = await User.findOne({
+      where: {
+        document: document,
+      },
+    });
+    if (userFoundInDB) {
+      const isThePasswordsMatching = comparePassword(
+        password,
+        userFoundInDB.password
+      );
+      if (
+        userFoundInDB.name === userName &&
+        userFoundInDB.email === email &&
+        userFoundInDB.document === document &&
+        isThePasswordsMatching
+      ) {
+        return res.status(200).json({ res: userFoundInDB });
+      }
+    } else {
+      return res.status(200).json({ res: "USER NOT FOUND" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ res: "SOMETHING WENT WRONG" });
+  }
+};
+
 module.exports = {
   createNewUser,
+  authenticateUserLogin,
 };
