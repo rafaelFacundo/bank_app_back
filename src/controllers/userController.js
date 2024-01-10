@@ -3,8 +3,9 @@ const Country = require("../database/model/Country");
 const Neighbourhood = require("../database/model/Neighbourhood");
 const State = require("../database/model/State");
 const City = require("../database/model/City");
+const Account = require("../database/model/Account");
 const { encryptPassword, comparePassword } = require("../utils/cryptography");
-const { DATEONLY } = require("sequelize");
+const generator = require("creditcard-generator");
 const { sequelize } = require("sequelize");
 const Address = require("../database/model/Address");
 
@@ -131,6 +132,11 @@ const createNewUser = async (req, res) => {
         city: userCity,
         state: userState,
         country: userCountry,
+      });
+
+      await Account.create({
+        user_id: user.id,
+        amount: 265.0,
       });
 
       delete user.password;
