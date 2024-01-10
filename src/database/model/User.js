@@ -8,6 +8,7 @@ class User extends Model {
         email: DataTypes.STRING,
         password: DataTypes.STRING,
         birth_date: DataTypes.DATEONLY,
+        document: DataTypes.STRING,
         is_active: DataTypes.BOOLEAN,
       },
       {
