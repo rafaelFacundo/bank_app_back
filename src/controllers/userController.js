@@ -4,6 +4,7 @@ const Neighbourhood = require("../database/model/Neighbourhood");
 const State = require("../database/model/State");
 const City = require("../database/model/City");
 const Account = require("../database/model/Account");
+const Card = require("../database/model/Card");
 const { encryptPassword, comparePassword } = require("../utils/cryptography");
 const generator = require("creditcard-generator");
 const { sequelize } = require("sequelize");
@@ -137,6 +138,16 @@ const createNewUser = async (req, res) => {
       await Account.create({
         user_id: user.id,
         amount: 265.0,
+      });
+
+      await Card.create({
+        owner_id: user.id,
+        card_number: generator.GenCC("VISA")[0],
+        total_limit: 265.0,
+        available_limit: 265.0,
+        is_active: false,
+        experation_date: new Date(),
+        security_code: Math.random(100),
       });
 
       delete user.password;
