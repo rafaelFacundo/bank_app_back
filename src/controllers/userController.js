@@ -7,7 +7,7 @@ const Account = require("../database/model/Account");
 const Card = require("../database/model/Card");
 const { encryptPassword, comparePassword } = require("../utils/cryptography");
 const generator = require("creditcard-generator");
-const { sequelize } = require("sequelize");
+const databaseConnection = require("../database/index");
 const Address = require("../database/model/Address");
 
 const createNewUser = async (req, res) => {
@@ -24,7 +24,7 @@ const createNewUser = async (req, res) => {
     street,
     house_number,
   } = req.body;
-  const newTransaction = await sequelize.transaction();
+  const newTransaction = await databaseConnection.transaction();
   let userCountry;
   let countryAlreadyExists = false;
   let userState;
@@ -57,20 +57,26 @@ const createNewUser = async (req, res) => {
 
       //verifing if the country already exists in the database
       //if the country does not exists it means that neither city, state, nor neighbourhood exists
-      userCountry = await Country.findOne({ where: { name: country } });
+      userCountry = await Country.findOne({
+        where: { name: country.toLowerCase() },
+      });
+
       if (!userCountry) {
-        userCountry = await Country.create({ name: country });
+        userCountry = await Country.create({
+          name: country.toLowerCase(),
+          code: country.slice(0, 3),
+        });
         userState = await State.create({
-          name: state,
-          country_id: userCountry.id,
+          name: state.toLowerCase(),
+          country_id: Number(userCountry.id),
         });
         userCity = await City.create({
-          name: city,
-          state_id: userState.id,
+          name: city.toLowerCase(),
+          state_id: Number(userState.id),
         });
         userNeighbourhood = await Neighbourhood.create({
-          name: neighbourhood,
-          city_id: userCity.id,
+          name: neighbourhood.toLowerCase(),
+          city_id: Number(userCity.id),
         });
       } else {
         countryAlreadyExists = true;
@@ -78,20 +84,24 @@ const createNewUser = async (req, res) => {
 
       if (countryAlreadyExists) {
         userState = await State.findOne({
-          where: { name: state, country_id: userCountry.id },
+          where: {
+            name: state.toLowerCase(),
+            country_id: Number(userCountry.id),
+          },
         });
+
         if (!userState) {
           userState = await State.create({
-            name: state,
-            country_id: userCountry.id,
+            name: state.toLowerCase(),
+            country_id: Number(userCountry.id),
           });
           userCity = await City.create({
-            name: city,
-            state_id: userState.id,
+            name: city.toLowerCase(),
+            state_id: Number(userState.id),
           });
           userNeighbourhood = await Neighbourhood.create({
-            name: neighbourhood,
-            city_id: userCity.id,
+            name: neighbourhood.toLowerCase(),
+            city_id: Number(userCity.id),
           });
         } else {
           stateAlreadyExists = true;
@@ -100,13 +110,16 @@ const createNewUser = async (req, res) => {
 
       if (stateAlreadyExists) {
         userCity = await City.findOne({
-          where: { name: city, state_id: userState.id },
+          where: { name: city.toLowerCase(), state_id: Number(userState.id) },
         });
         if (!userCity) {
-          userCity = await City.create({ name: city, state_id: userState.id });
+          userCity = await City.create({
+            name: city.toLowerCase(),
+            state_id: Number(userState.id),
+          });
           userNeighbourhood = await Neighbourhood.create({
-            name: neighbourhood,
-            city_id: userCity.id,
+            name: neighbourhood.toLowerCase(),
+            city_id: Number(userCity.id),
           });
         } else {
           cityAlreadyExists = true;
@@ -115,33 +128,36 @@ const createNewUser = async (req, res) => {
 
       if (cityAlreadyExists) {
         userNeighbourhood = await Neighbourhood.findOne({
-          where: { name: neighbourhood, city_id: userCity.id },
+          where: {
+            name: neighbourhood.toLowerCase(),
+            city_id: Number(userCity.id),
+          },
         });
         if (!userNeighbourhood) {
           userNeighbourhood = await Neighbourhood.create({
-            name: neighbourhood,
-            city_id: userCity.id,
+            name: neighbourhood.toLowerCase(),
+            city_id: Number(userCity.id),
           });
         }
       }
 
       await Address.create({
-        user_id: user.id,
+        user_id: Number(user.id),
         street: street,
         house_number: house_number,
-        neighbourhood: userNeighbourhood,
-        city: userCity,
-        state: userState,
-        country: userCountry,
+        neighbourhood: Number(userNeighbourhood.id),
+        city: Number(userCity.id),
+        state: Number(userState.id),
+        country: Number(userCountry.id),
       });
 
       await Account.create({
-        user_id: user.id,
+        user_id: Number(user.id),
         amount: 265.0,
       });
 
       await Card.create({
-        owner_id: user.id,
+        owner_id: Number(user.id),
         card_number: generator.GenCC("VISA")[0],
         total_limit: 265.0,
         available_limit: 265.0,

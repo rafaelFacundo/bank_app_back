@@ -5,6 +5,7 @@ class Country extends Model {
     super.init(
       {
         name: DataTypes.STRING,
+        code: DataTypes.STRING,
       },
       { sequelize: connection }
     );
