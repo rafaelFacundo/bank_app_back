@@ -181,7 +181,7 @@ const createNewUser = async (req, res) => {
 };
 
 const authenticateUserLogin = async (req, res) => {
-  const { userName, email, document, password } = req.body;
+  const { name, email, document, password } = req.body;
 
   try {
     const userFoundInDB = await User.findOne({
@@ -190,17 +190,20 @@ const authenticateUserLogin = async (req, res) => {
       },
     });
     if (userFoundInDB) {
-      const isThePasswordsMatching = comparePassword(
+      const isThePasswordsMatching = await comparePassword(
         password,
         userFoundInDB.password
       );
+
       if (
-        userFoundInDB.name === userName &&
-        userFoundInDB.email === email &&
+        userFoundInDB.name === name.toLowerCase() &&
+        userFoundInDB.email === email.toLowerCase() &&
         userFoundInDB.document === document &&
         isThePasswordsMatching
       ) {
         return res.status(200).json({ res: userFoundInDB });
+      } else {
+        return res.status(200).json({ res: "WRONG CREDENTIALS" });
       }
     } else {
       return res.status(200).json({ res: "USER NOT FOUND" });
