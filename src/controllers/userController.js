@@ -151,12 +151,12 @@ const createNewUser = async (req, res) => {
         country: Number(userCountry.id),
       });
 
-      await Account.create({
+      const userAccount = await Account.create({
         user_id: Number(user.id),
         amount: 265.0,
       });
 
-      await Card.create({
+      const userCard = await Card.create({
         owner_id: Number(user.id),
         card_number: generator.GenCC("VISA")[0],
         total_limit: 265.0,
@@ -169,8 +169,16 @@ const createNewUser = async (req, res) => {
       delete user.password;
 
       newTransaction.commit();
-      return res.status(200).json({ res: user });
+      return res.status(200).json({
+        res: {
+          user: user,
+          country: userCountry,
+          userAccount: userAccount,
+          userCard: userCard,
+        },
+      });
     } else {
+      newTransaction.commit();
       return res.status(200).json({ res: "USER ALREADY EXISTS" });
     }
   } catch (error) {
