@@ -6,6 +6,7 @@ class Country extends Model {
       {
         name: DataTypes.STRING,
         code: DataTypes.STRING,
+        currency: DataTypes.STRING,
       },
       { sequelize: connection }
     );

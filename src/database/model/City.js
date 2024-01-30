@@ -4,8 +4,8 @@ class City extends Model {
   static init(connection) {
     super.init(
       {
-        state_id: DataTypes.INTEGER,
         name: DataTypes.STRING,
+        subregion: DataTypes.INTEGER,
       },
       { sequelize: connection }
     );

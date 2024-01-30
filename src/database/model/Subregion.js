@@ -1,11 +1,11 @@
 const { Model, DataTypes } = require("sequelize");
 
-class Neighbourhood extends Model {
+class Subregion extends Model {
   static init(connection) {
     super.init(
       {
         name: DataTypes.STRING,
-        city_id: DataTypes.INTEGER,
+        country: DataTypes.INTEGER,
       },
       {
         sequelize: connection,
@@ -14,4 +14,4 @@ class Neighbourhood extends Model {
   }
 }
 
-module.exports = Neighbourhood;
+module.exports = Subregion;

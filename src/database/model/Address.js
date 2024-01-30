@@ -5,11 +5,8 @@ class Address extends Model {
     super.init(
       {
         user_id: DataTypes.INTEGER,
-        street: DataTypes.STRING,
-        house_number: DataTypes.STRING,
-        neighbourhood: DataTypes.INTEGER,
         city: DataTypes.INTEGER,
-        state: DataTypes.INTEGER,
+        subregion: DataTypes.INTEGER,
         country: DataTypes.INTEGER,
       },
       {

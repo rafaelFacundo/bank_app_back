@@ -9,10 +9,13 @@ const Address = require("../database/model/Address.js");
 const Card = require("../database/model/Card.js");
 const City = require("../database/model/City.js");
 const Country = require("../database/model/Country.js");
-const Neighbourhood = require("../database/model/Neighbourhood.js");
-const State = require("../database/model/State.js");
+const Subregion = require("../database/model/Subregion.js");
 
 const databaseConnection = new Sequelize(databaseConfigs);
+
+databaseConnection.authenticate().then(() => {
+  console.log("connected");
+});
 
 User.init(databaseConnection);
 Account.init(databaseConnection);
@@ -20,7 +23,6 @@ Address.init(databaseConnection);
 Card.init(databaseConnection);
 City.init(databaseConnection);
 Country.init(databaseConnection);
-Neighbourhood.init(databaseConnection);
-State.init(databaseConnection);
+Subregion.init(databaseConnection);
 
 module.exports = databaseConnection;
