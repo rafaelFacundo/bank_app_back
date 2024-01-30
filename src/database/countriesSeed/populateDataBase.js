@@ -1,5 +1,7 @@
 const fs = require("fs");
 const Country = require("../model/Country.js");
+const Subregion = require("../model/Subregion.js");
+const City = require("../model/City.js");
 
 const fetchAllCountries = async () => {
   const response = await fetch("https://restcountries.com/v3.1/all");
@@ -14,7 +16,7 @@ const readFile = (fileName) => {
   return fileData;
 };
 
-const tryToPopulateDb = async () => {
+const populateCountriesTable = async () => {
   const countriesArray = [];
   const countriesList = await fetchAllCountries();
   const countriesFromFile = readFile("./countries3.txt");
@@ -61,4 +63,72 @@ const tryToPopulateDb = async () => {
   }
 };
 
-module.exports = tryToPopulateDb;
+const populateSubregionsTable = async () => {
+  let subregionsToSaveInDB = [];
+  const allCountriesInDB = await Country.findAll();
+  const subregionsFromFile = readFile("./states3.txt");
+  subregionsFromFile.forEach((subregion) => {
+    const subregionCountry = subregion.split("-")[0];
+    const subregionName = subregion.split("-")[1];
+    allCountriesInDB.forEach((country) => {
+      if (subregionCountry.toLowerCase() === country.name) {
+        subregionsToSaveInDB.push([subregionName, country.id]);
+      }
+    });
+  });
+  console.log(subregionsToSaveInDB);
+
+  subregionsToSaveInDB.forEach(async (subregion) => {
+    const response = await Subregion.create({
+      name: subregion[0],
+      country: subregion[1],
+    });
+    console.log(response);
+  });
+};
+
+const populateCitiesTable = async () => {
+  let citiesToSaveInDB = [];
+  const allSubregionsInD = await Subregion.findAll();
+  const allCountriesInDB = await Country.findAll();
+  const citiesFromFile = readFile("./cities3.txt");
+  let isItsCountryInDB = false;
+  let cityArray = [];
+  citiesFromFile.forEach((city) => {
+    cityArray = [];
+    isItsCountryInDB = false;
+    const cityCountry = city.split("-")[0];
+    const citySubregion = city.split("-")[1];
+    const cityName = city.split("-")[2];
+    allCountriesInDB.forEach((country) => {
+      if (country.name === cityCountry.toLowerCase()) {
+        isItsCountryInDB = true;
+        cityArray.push(country.id);
+      }
+    });
+
+    if (isItsCountryInDB && citySubregion != "") {
+      allSubregionsInD.forEach((subregion) => {
+        if (
+          subregion.name === citySubregion &&
+          subregion.country === cityArray[0]
+        ) {
+          citiesToSaveInDB.push([cityName, subregion.id, cityArray[0]]);
+        }
+      });
+    } else if (isItsCountryInDB) {
+      citiesToSaveInDB.push([cityName, null, cityArray[0]]);
+    }
+  });
+
+  citiesToSaveInDB.forEach(async (city) => {
+    const response = await City.create({
+      name: city[0],
+      subregion: city[1],
+      country: city[2],
+    });
+    console.log(response);
+  });
+};
+
+module.exports = populateCitiesTable;

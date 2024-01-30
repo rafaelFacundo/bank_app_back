@@ -6,6 +6,7 @@ class City extends Model {
       {
         name: DataTypes.STRING,
         subregion: DataTypes.INTEGER,
+        country: DataTypes.INTEGER,
       },
       { sequelize: connection }
     );
