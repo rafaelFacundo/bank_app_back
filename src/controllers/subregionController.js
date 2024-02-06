@@ -8,6 +8,8 @@ const getAllSubregionsByCountry = async (req, res) => {
         country: countryId,
       },
     });
+    console.log("ReSPOTS");
+    console.log(response);
     return res.status(200).json({ res: response });
   } catch (error) {
     return res.status(500).json({ res: "SOMETHING WENT Wrong" });
