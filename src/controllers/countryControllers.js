@@ -9,6 +9,20 @@ const getAllCountries = async (req, res) => {
   }
 };
 
+const getCountryById = async (id) => {
+  try {
+    const response = await Country.findOne({
+      where: {
+        id: id,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   getAllCountries,
+  getCountryById,
 };

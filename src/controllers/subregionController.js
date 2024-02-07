@@ -16,6 +16,17 @@ const getAllSubregionsByCountry = async (req, res) => {
   }
 };
 
-module.exports = {
-  getAllSubregionsByCountry,
+const getSubregionById = async (id) => {
+  try {
+    const response = await Subregion.findOne({
+      where: {
+        id: id,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
+
+module.exports = { getAllSubregionsByCountry, getSubregionById };

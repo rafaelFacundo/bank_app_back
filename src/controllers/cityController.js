@@ -13,6 +13,17 @@ const getAllCitiesByCountry = async (req, res) => {
   }
 };
 
-module.exports = {
-  getAllCitiesByCountry,
+const getCityById = async (id) => {
+  try {
+    const response = await City.findOne({
+      where: {
+        id: id,
+      },
+    });
+    return response;
+  } catch (error) {
+    return undefined;
+  }
 };
+
+module.exports = { getAllCitiesByCountry, getCityById };

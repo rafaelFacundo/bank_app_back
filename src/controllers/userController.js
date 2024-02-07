@@ -10,17 +10,21 @@ const databaseConnection = require("../database/index");
 const Address = require("../database/model/Address");
 const { createAccount } = require("./accountController");
 const { createNewAdress } = require("./addressController");
+const Subregion = require("../database/model/Subregion");
+const { getCountryById } = require("./countryControllers");
+const { getCityById } = require("./cityController");
+const { getSubregionById } = require("./subregionController");
 
 const createNewUser = async (req, res) => {
   const {
-    name,
-    email,
-    password,
-    birth_date,
-    document,
-    city,
-    country,
-    subregion,
+    name, //name of the new user
+    email, // email of the new user
+    password, // password of the new user
+    birth_date, // birth date of the new user
+    document, // document of the new user
+    city, // city id of the new user
+    country, // country id of the new user
+    subregion, // subregion id of the new user
   } = req.body;
   const newTransaction = await databaseConnection.transaction();
   try {
@@ -43,7 +47,8 @@ const createNewUser = async (req, res) => {
       const newUser = await User.create({
         name: name,
         password: encriptedPassword,
-        birth_date: birth_date,
+        email: email,
+        birth_date: new Date(birth_date),
         document: document,
         is_active: true,
       });
@@ -53,13 +58,20 @@ const createNewUser = async (req, res) => {
       //because this parameter have the default value of 265
       const newUseraccount = await createAccount(Number(newUser.id));
 
+      console.log("ASDASDASDASDASD", subregion);
+
       //creating the address of the new user
       const newUserAddres = await createNewAdress(
         Number(newUser.id),
-        Number(city.id),
-        Number(subregion.id),
-        Number(country.id)
+        Number(city),
+        subregion != null ? Number(subregion) : null,
+        Number(country)
       );
+
+      //getting the country, city and subregion
+      const newUserCountry = getCountryById(Number(country));
+      const newUserCity = getCityById(Number(city));
+      const newUserSubregion = getSubregionById(Number(subregion));
 
       //deleting the password to not send this in the response
       delete newUser.password;
@@ -68,7 +80,15 @@ const createNewUser = async (req, res) => {
         res: "USER SUCCESSFULL CREATED",
         user: newUser,
         userAccount: newUseraccount,
-        userAddress: newUserAddres,
+        userAddress: {
+          countryId: newUserCountry.id,
+          countryName: newUserCountry.name,
+          countryCurrency: newUserCountry.currency,
+          cityId: newUserCity.id,
+          cityName: newUserCity.name,
+          subregionId: newUserSubregion.id,
+          subregionName: newUserSubregion.name,
+        },
       });
     } else {
       newTransaction.commit();
