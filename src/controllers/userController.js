@@ -58,8 +58,6 @@ const createNewUser = async (req, res) => {
       //because this parameter have the default value of 265
       const newUseraccount = await createAccount(Number(newUser.id));
 
-      console.log("ASDASDASDASDASD", subregion);
-
       //creating the address of the new user
       const newUserAddres = await createNewAdress(
         Number(newUser.id),
@@ -69,26 +67,45 @@ const createNewUser = async (req, res) => {
       );
 
       //getting the country, city and subregion
-      const newUserCountry = getCountryById(Number(country));
-      const newUserCity = getCityById(Number(city));
-      const newUserSubregion = getSubregionById(Number(subregion));
+      const newUserCountry = await Country.findOne({
+        where: {
+          id: country,
+        },
+      });
+      const newUserCity = await City.findOne({
+        where: {
+          id: city,
+        },
+      });
+      let newUserSubregion = { name: "no subregion", id: null };
+      if (subregion != null) {
+        newUserSubregion = await Subregion.findOne({
+          where: {
+            id: subregion,
+          },
+        });
+      }
 
       //deleting the password to not send this in the response
       delete newUser.password;
+
+      const userAddress = {
+        countryId: newUserCountry.id,
+        countryName: newUserCountry.name,
+        countryCurrency: newUserCountry.currency,
+        cityId: newUserCity.id,
+        cityName: newUserCity.name,
+        subregionId: newUserSubregion.id,
+        subregionName: newUserSubregion.name,
+      };
+
+      console.log(userAddress);
       await newTransaction.commit();
       return res.status(200).json({
         res: "USER SUCCESSFULL CREATED",
         user: newUser,
         userAccount: newUseraccount,
-        userAddress: {
-          countryId: newUserCountry.id,
-          countryName: newUserCountry.name,
-          countryCurrency: newUserCountry.currency,
-          cityId: newUserCity.id,
-          cityName: newUserCity.name,
-          subregionId: newUserSubregion.id,
-          subregionName: newUserSubregion.name,
-        },
+        userAddress: userAddress,
       });
     } else {
       newTransaction.commit();
