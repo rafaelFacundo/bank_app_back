@@ -6,7 +6,10 @@ class Address extends Model {
       {
         user: DataTypes.INTEGER,
         city: DataTypes.INTEGER,
-        subregion: DataTypes.INTEGER,
+        subregion: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
         country: DataTypes.INTEGER,
       },
       {
