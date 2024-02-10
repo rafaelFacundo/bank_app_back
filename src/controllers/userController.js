@@ -2,18 +2,11 @@ const { Op } = require("@sequelize/core");
 const User = require("../database/model/User");
 const Country = require("../database/model/Country");
 const City = require("../database/model/City");
-const Account = require("../database/model/Account");
-const Card = require("../database/model/Card");
 const { encryptPassword, comparePassword } = require("../utils/cryptography");
-const generator = require("creditcard-generator");
 const databaseConnection = require("../database/index");
-const Address = require("../database/model/Address");
 const { createAccount } = require("./accountController");
 const { createNewAdress } = require("./addressController");
 const Subregion = require("../database/model/Subregion");
-const { getCountryById } = require("./countryControllers");
-const { getCityById } = require("./cityController");
-const { getSubregionById } = require("./subregionController");
 
 const createNewUser = async (req, res) => {
   const {
@@ -98,8 +91,6 @@ const createNewUser = async (req, res) => {
         subregionId: newUserSubregion.id,
         subregionName: newUserSubregion.name,
       };
-
-      console.log(userAddress);
       await newTransaction.commit();
       return res.status(200).json({
         res: "USER SUCCESSFULL CREATED",
