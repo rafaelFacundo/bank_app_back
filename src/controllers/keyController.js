@@ -2,6 +2,7 @@ const Key = require("../database/model/Key");
 const { createRandomString } = require("../utils/cryptography");
 
 const createUserKey = async (req, res) => {
+  console.log("BNBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
   try {
     const userId = req.body.id;
     const newUserKey = createRandomString(15);
@@ -21,16 +22,16 @@ const createUserKey = async (req, res) => {
 };
 
 const updateUserKey = async (req, res) => {
+  console.log("ASDALSKDJLASKDJALSKDJALSKDJLKJ");
   try {
     const userId = req.body.id;
     const newUserKey = createRandomString(15);
-    const userKeyRegisterFromDb = await Key.findOne({
-      where: {
-        id: userId,
+    const response = await Key.update(
+      {
+        key: newUserKey,
       },
-    });
-    userKeyRegisterFromDb.key = newUserKey;
-    const response = await userKeyRegisterFromDb.save();
+      { where: { user: userId } }
+    );
     res.status(200).json({
       res: "USER KEY SUCCESSFULLY UPDATED",
       key: response,
