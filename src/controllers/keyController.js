@@ -20,6 +20,29 @@ const createUserKey = async (req, res) => {
   }
 };
 
+const updateUserKey = async (req, res) => {
+  try {
+    const userId = req.body.id;
+    const newUserKey = createRandomString(15);
+    const userKeyRegisterFromDb = await Key.findOne({
+      where: {
+        id: userId,
+      },
+    });
+    userKeyRegisterFromDb.key = newUserKey;
+    const response = await userKeyRegisterFromDb.save();
+    res.status(200).json({
+      res: "USER KEY SUCCESSFULLY UPDATED",
+      key: response,
+    });
+  } catch (error) {
+    res.status(500).json({
+      res: "SOMETHING WENT WRONG",
+    });
+  }
+};
+
 module.exports = {
   createUserKey,
+  updateUserKey,
 };
