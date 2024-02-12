@@ -19,3 +19,5 @@ class key extends Model {
     );
   }
 }
+
+module.exports = key;
