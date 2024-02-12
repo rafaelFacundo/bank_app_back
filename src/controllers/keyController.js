@@ -34,7 +34,7 @@ const updateUserKey = async (req, res) => {
     );
     res.status(200).json({
       res: "USER KEY SUCCESSFULLY UPDATED",
-      key: response,
+      key: newUserKey,
     });
   } catch (error) {
     res.status(500).json({
