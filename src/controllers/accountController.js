@@ -17,31 +17,32 @@ const createAccount = async (userId, amount = 265.0) => {
 
 const transferAmount = async (req, res) => {
   const newTransaction = await databaseConnection.transaction();
-  const { userSenderId, userReceiverId, amountToSend } = req.body;
+  const { userSenderId, userReceiverId, amountToDiscount, amountToAdd } =
+    req.body;
   try {
-    //getting the acoount of the user that is sending the amount and first verify
-    //if the he has the necessary amount to send
     const userSenderAccount = await Account.findOne({
       where: { user_id: userSenderId },
     });
-
-    //if not return an error response
-    if (userSenderAccount.amount < amountToSend) {
-      return res.status(500).json({
-        res: "YOUR AMOUNT IS SMALLER THAN THE AMOUNT YOU WANT TO SEND.",
+    if (userSenderAccount.amount >= amountToDiscount) {
+      userSenderAccount.amount = userSenderAccount.amount - amountToDiscount;
+      await userSenderAccount.save();
+      const userReceiverAccount = await Account.findOne({
+        where: {
+          user_id: userReceiverId,
+        },
       });
+      userReceiverAccount.amount = userReceiverAccount.amount + amountToAdd;
+      await userReceiverAccount.save();
+      return res.status(200).json({ res: "TRANSFER DONE." });
+    } else {
+      return res
+        .status(500)
+        .json({ res: "USER DO NOT HAVE NECESSARY AMOUNT IN ACCOUNT." });
     }
-
-    //getting the user that will receive the amount and first verify if the account of the user is active
-
-    const userReceiverAccount = await Account.findOne({
-      where: {
-        user_id: userReceiverId,
-      },
-    });
   } catch (error) {
+    newTransaction.rowback();
     return res.status(500).json({ res: "SOMETHING WENT WRONG." });
   }
 };
 
-module.exports = { createAccount };
+module.exports = { createAccount, transferAmount };
