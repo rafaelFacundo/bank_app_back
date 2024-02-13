@@ -6,6 +6,7 @@ const CountryRouter = require("./src/routes/countryRoutes.js");
 const SubregionRouter = require("./src/routes/SubregionRoutes.js");
 const CityRouter = require("./src/routes/cityRoutes.js");
 const KeyRouter = require("./src/routes/keyRoutes.js");
+const AddressRouter = require("./src/routes/addressRouter.js");
 require("./src/database/index.js");
 
 const API_ENTRYPOINT = "/api/v1/";
@@ -17,6 +18,7 @@ app.use(API_ENTRYPOINT, CountryRouter);
 app.use(API_ENTRYPOINT, SubregionRouter);
 app.use(API_ENTRYPOINT, CityRouter);
 app.use(API_ENTRYPOINT, KeyRouter);
+app.use(API_ENTRYPOINT, AddressRouter);
 
 app.listen(process.env.NODE_SERVER_PORT, () => {
   console.log("the server is on");

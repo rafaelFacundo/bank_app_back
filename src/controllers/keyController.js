@@ -2,7 +2,6 @@ const Key = require("../database/model/Key");
 const { createRandomString } = require("../utils/cryptography");
 
 const createUserKey = async (req, res) => {
-  console.log("BNBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
   try {
     const userId = req.body.id;
     const newUserKey = createRandomString(15);
@@ -22,7 +21,6 @@ const createUserKey = async (req, res) => {
 };
 
 const updateUserKey = async (req, res) => {
-  console.log("ASDALSKDJLASKDJALSKDJALSKDJLKJ");
   try {
     const userId = req.body.id;
     const newUserKey = createRandomString(15);
@@ -43,7 +41,24 @@ const updateUserKey = async (req, res) => {
   }
 };
 
+const getUserIdByTransferKey = async (req, res) => {
+  try {
+    const transferKeyToSearch = req.params.key;
+    console.log("the transfer key is", transferKeyToSearch);
+    const response = await Key.findOne({
+      where: {
+        key: transferKeyToSearch,
+      },
+    });
+
+    res.status(200).json({ res: "USER FOUND", userId: response.user });
+  } catch (error) {
+    res.status(500).json({ res: "SOMETHING WENT WRONG" });
+  }
+};
+
 module.exports = {
   createUserKey,
   updateUserKey,
+  getUserIdByTransferKey,
 };

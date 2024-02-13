@@ -22,7 +22,23 @@ const getCountryById = async (id) => {
   }
 };
 
+const getCountryCurrencyById = async (req, res) => {
+  try {
+    const countryId = req.params.id;
+    const response = await Country.findOne({
+      where: {
+        id: countryId,
+      },
+    });
+
+    res.status(200).json({ res: "USER FOUND", currency: response.currency });
+  } catch (error) {
+    res.status(500).json({ res: "SOMETHING WENT WRONG" });
+  }
+};
+
 module.exports = {
   getAllCountries,
   getCountryById,
+  getCountryCurrencyById,
 };

@@ -33,6 +33,7 @@ const transferAmount = async (req, res) => {
     }
 
     //getting the user that will receive the amount and first verify if the account of the user is active
+
     const userReceiverAccount = await Account.findOne({
       where: {
         user_id: userReceiverId,

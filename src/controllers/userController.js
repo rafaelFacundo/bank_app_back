@@ -145,7 +145,22 @@ const authenticateUserLogin = async (req, res) => {
   }
 };
 
+const verifyIfUserIsActiveById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const response = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+    res.status(200).json({ res: "USER FOUND", is_active: response.is_active });
+  } catch (error) {
+    res.status(500).json({ res: "SOMETHING WENT WRONG" });
+  }
+};
+
 module.exports = {
   createNewUser,
   authenticateUserLogin,
+  verifyIfUserIsActiveById,
 };
