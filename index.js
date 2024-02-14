@@ -8,6 +8,7 @@ const CityRouter = require("./src/routes/cityRoutes.js");
 const KeyRouter = require("./src/routes/keyRoutes.js");
 const AddressRouter = require("./src/routes/addressRouter.js");
 const AccountRouter = require("./src/routes/accountRouter.js");
+const TransactionRouter = require("./src/routes/transactionRouter.js");
 
 require("./src/database/index.js");
 
@@ -22,6 +23,7 @@ app.use(API_ENTRYPOINT, CityRouter);
 app.use(API_ENTRYPOINT, KeyRouter);
 app.use(API_ENTRYPOINT, AddressRouter);
 app.use(API_ENTRYPOINT, AccountRouter);
+app.use(API_ENTRYPOINT, TransactionRouter);
 
 app.listen(process.env.NODE_SERVER_PORT, async () => {
   console.log("the server is on");

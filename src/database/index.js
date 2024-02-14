@@ -11,6 +11,7 @@ const City = require("../database/model/City.js");
 const Country = require("../database/model/Country.js");
 const Subregion = require("../database/model/Subregion.js");
 const Key = require("../database/model/Key.js");
+const Transaction = require("../database/model/Transaction.js");
 
 const databaseConnection = new Sequelize(databaseConfigs);
 
@@ -26,5 +27,6 @@ City.init(databaseConnection);
 Country.init(databaseConnection);
 Subregion.init(databaseConnection);
 Key.init(databaseConnection);
+Transaction.init(databaseConnection);
 
 module.exports = databaseConnection;
